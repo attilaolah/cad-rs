@@ -1,17 +1,15 @@
-package main
+package municipalities
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
 
+	"github.com/attilaolah/ekat/latin"
 	"golang.org/x/net/html"
 )
 
@@ -32,12 +30,6 @@ type Municipality struct {
 	Name string `json:"name"`
 
 	CadastralMunicipalities []*CadastralMunicipality `json:"cadastral_municipalities,omitempty"`
-}
-
-// CadastralMunicipality represents a cadastral municipality.
-type CadastralMunicipality struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
 }
 
 func FetchMunicipalities() ([]*Municipality, error) {
@@ -73,7 +65,7 @@ func FetchMunicipalities() ([]*Municipality, error) {
 			return nil, fmt.Errorf("error parsing %s: no child node", opt)
 		}
 		m := Municipality{
-			Name: strings.TrimSpace(strings.ToUpper(RemoveDigraphs.Replace(ToLatin.Replace(tn.Data)))),
+			Name: strings.TrimSpace(strings.ToUpper(latin.RemoveDigraphs.Replace(latin.ToLatin.Replace(tn.Data)))),
 		}
 
 		// Find the ID
@@ -153,15 +145,4 @@ func byTagID(n *html.Node, tag, id string) *html.Node {
 		}
 	}
 	return nil
-}
-
-func main() {
-	ms, err := FetchMunicipalities()
-	if err != nil {
-		log.Fatalf("error fetching municipalities: %v", err)
-		return
-	}
-	if err := json.NewEncoder(os.Stdout).Encode(&ms); err != nil {
-		log.Fatalf("error encoding municipalities: %v", err)
-	}
 }

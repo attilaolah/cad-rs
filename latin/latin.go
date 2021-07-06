@@ -1,4 +1,5 @@
-package main
+// Package latin provides string replacers for Cyrillic / Gaj's Latin.
+package latin
 
 import "strings"
 
