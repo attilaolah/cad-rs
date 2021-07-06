@@ -1,0 +1,674 @@
+[
+  {
+    "id": 70017,
+    "name": "ALEKSANDROVAC"
+  },
+  {
+    "id": 70025,
+    "name": "ALEKSINAC"
+  },
+  {
+    "id": 70033,
+    "name": "ARANĐELOVAC"
+  },
+  {
+    "id": 70041,
+    "name": "ARILJE"
+  },
+  {
+    "id": 70050,
+    "name": "BABUŠNICA"
+  },
+  {
+    "id": 70068,
+    "name": "BAJINA BAŠTA"
+  },
+  {
+    "id": 70076,
+    "name": "BATOČINA"
+  },
+  {
+    "id": 70084,
+    "name": "BELA PALANKA"
+  },
+  {
+    "id": 70092,
+    "name": "BARAJEVO"
+  },
+  {
+    "id": 70106,
+    "name": "VOŽDOVAC"
+  },
+  {
+    "id": 70114,
+    "name": "VRAČAR"
+  },
+  {
+    "id": 70122,
+    "name": "GROCKA"
+  },
+  {
+    "id": 70149,
+    "name": "ZVEZDARA"
+  },
+  {
+    "id": 70157,
+    "name": "ZEMUN"
+  },
+  {
+    "id": 70165,
+    "name": "LAZAREVAC"
+  },
+  {
+    "id": 70173,
+    "name": "MLADENOVAC"
+  },
+  {
+    "id": 70181,
+    "name": "NOVI BEOGRAD"
+  },
+  {
+    "id": 70190,
+    "name": "OBRENOVAC"
+  },
+  {
+    "id": 70203,
+    "name": "PALILULA (BEOGRAD)"
+  },
+  {
+    "id": 70211,
+    "name": "RAKOVICA"
+  },
+  {
+    "id": 70220,
+    "name": "SAVSKI VENAC"
+  },
+  {
+    "id": 70238,
+    "name": "SOPOT"
+  },
+  {
+    "id": 70246,
+    "name": "STARI GRAD"
+  },
+  {
+    "id": 70254,
+    "name": "ČUKARICA"
+  },
+  {
+    "id": 70262,
+    "name": "BLACE"
+  },
+  {
+    "id": 70289,
+    "name": "BOGATIĆ"
+  },
+  {
+    "id": 70297,
+    "name": "BOJNIK"
+  },
+  {
+    "id": 70319,
+    "name": "BOLJEVAC"
+  },
+  {
+    "id": 70327,
+    "name": "BOR"
+  },
+  {
+    "id": 70335,
+    "name": "BOSILEGRAD"
+  },
+  {
+    "id": 70343,
+    "name": "BRUS"
+  },
+  {
+    "id": 70351,
+    "name": "BUJANOVAC"
+  },
+  {
+    "id": 70360,
+    "name": "VALJEVO"
+  },
+  {
+    "id": 70378,
+    "name": "VARVARIN"
+  },
+  {
+    "id": 70386,
+    "name": "VELIKA PLANA"
+  },
+  {
+    "id": 70394,
+    "name": "VELIKO GRADIŠTE"
+  },
+  {
+    "id": 70408,
+    "name": "VLADIMIRCI"
+  },
+  {
+    "id": 70416,
+    "name": "VLADIČIN HAN"
+  },
+  {
+    "id": 70424,
+    "name": "VLASOTINCE"
+  },
+  {
+    "id": 70432,
+    "name": "VRANJE"
+  },
+  {
+    "id": 70459,
+    "name": "VRNJAČKA BANJA"
+  },
+  {
+    "id": 70467,
+    "name": "GADŽIN HAN"
+  },
+  {
+    "id": 70475,
+    "name": "GOLUBAC"
+  },
+  {
+    "id": 70483,
+    "name": "GORNJI MILANOVAC"
+  },
+  {
+    "id": 70491,
+    "name": "DESPOTOVAC"
+  },
+  {
+    "id": 70505,
+    "name": "DIMITROVGRAD"
+  },
+  {
+    "id": 70513,
+    "name": "DOLJEVAC"
+  },
+  {
+    "id": 70521,
+    "name": "ŽABARI"
+  },
+  {
+    "id": 70530,
+    "name": "ŽAGUBICA"
+  },
+  {
+    "id": 70548,
+    "name": "ŽITORAĐA"
+  },
+  {
+    "id": 70556,
+    "name": "ZAJEČAR"
+  },
+  {
+    "id": 70564,
+    "name": "IVANJICA"
+  },
+  {
+    "id": 70572,
+    "name": "KLADOVO"
+  },
+  {
+    "id": 70599,
+    "name": "KNIĆ"
+  },
+  {
+    "id": 70602,
+    "name": "KNJAŽEVAC"
+  },
+  {
+    "id": 70629,
+    "name": "KOSJERIĆ"
+  },
+  {
+    "id": 70637,
+    "name": "KOCELJEVA"
+  },
+  {
+    "id": 70645,
+    "name": "KRAGUJEVAC"
+  },
+  {
+    "id": 70653,
+    "name": "KRALJEVO"
+  },
+  {
+    "id": 70661,
+    "name": "KRUPANJ"
+  },
+  {
+    "id": 70670,
+    "name": "KRUŠEVAC"
+  },
+  {
+    "id": 70688,
+    "name": "KURŠUMLIJA"
+  },
+  {
+    "id": 70696,
+    "name": "KUČEVO"
+  },
+  {
+    "id": 70700,
+    "name": "LAJKOVAC"
+  },
+  {
+    "id": 70718,
+    "name": "LEBANE"
+  },
+  {
+    "id": 70726,
+    "name": "LESKOVAC"
+  },
+  {
+    "id": 70734,
+    "name": "LOZNICA"
+  },
+  {
+    "id": 70742,
+    "name": "LUČANI"
+  },
+  {
+    "id": 70769,
+    "name": "LJIG"
+  },
+  {
+    "id": 70777,
+    "name": "LJUBOVIJA"
+  },
+  {
+    "id": 70785,
+    "name": "MAJDANPEK"
+  },
+  {
+    "id": 70793,
+    "name": "MALI ZVORNIK"
+  },
+  {
+    "id": 70807,
+    "name": "MALO CRNIĆE"
+  },
+  {
+    "id": 70815,
+    "name": "MEDVEĐA"
+  },
+  {
+    "id": 70823,
+    "name": "MEROŠINA"
+  },
+  {
+    "id": 70831,
+    "name": "MIONICA"
+  },
+  {
+    "id": 70840,
+    "name": "NEGOTIN"
+  },
+  {
+    "id": 70866,
+    "name": "NOVA VAROŠ"
+  },
+  {
+    "id": 70874,
+    "name": "NOVI PAZAR"
+  },
+  {
+    "id": 70882,
+    "name": "OSEČINA"
+  },
+  {
+    "id": 70904,
+    "name": "PARAĆIN"
+  },
+  {
+    "id": 70912,
+    "name": "PETROVAC NA MLAVI"
+  },
+  {
+    "id": 70939,
+    "name": "PIROT"
+  },
+  {
+    "id": 70947,
+    "name": "POŽAREVAC"
+  },
+  {
+    "id": 70955,
+    "name": "POŽEGA"
+  },
+  {
+    "id": 70963,
+    "name": "PREŠEVO"
+  },
+  {
+    "id": 70971,
+    "name": "PRIBOJ"
+  },
+  {
+    "id": 70980,
+    "name": "PRIJEPOLJE"
+  },
+  {
+    "id": 70998,
+    "name": "PROKUPLJE"
+  },
+  {
+    "id": 71005,
+    "name": "RAŽANJ"
+  },
+  {
+    "id": 71013,
+    "name": "RAČA"
+  },
+  {
+    "id": 71021,
+    "name": "RAŠKA"
+  },
+  {
+    "id": 71030,
+    "name": "REKOVAC"
+  },
+  {
+    "id": 71048,
+    "name": "JAGODINA"
+  },
+  {
+    "id": 71056,
+    "name": "SVILAJNAC"
+  },
+  {
+    "id": 71064,
+    "name": "SVRLJIG"
+  },
+  {
+    "id": 71072,
+    "name": "SJENICA"
+  },
+  {
+    "id": 71099,
+    "name": "SMEDEREVO"
+  },
+  {
+    "id": 71102,
+    "name": "SMEDEREVSKA PALANKA"
+  },
+  {
+    "id": 71129,
+    "name": "SOKOBANJA"
+  },
+  {
+    "id": 71137,
+    "name": "SURDULICA"
+  },
+  {
+    "id": 71145,
+    "name": "UŽICE"
+  },
+  {
+    "id": 71153,
+    "name": "TOPOLA"
+  },
+  {
+    "id": 71161,
+    "name": "TRGOVIŠTE"
+  },
+  {
+    "id": 71170,
+    "name": "TRSTENIK"
+  },
+  {
+    "id": 71188,
+    "name": "TUTIN"
+  },
+  {
+    "id": 71196,
+    "name": "ĆIĆEVAC"
+  },
+  {
+    "id": 71200,
+    "name": "ĆUPRIJA"
+  },
+  {
+    "id": 71218,
+    "name": "UB"
+  },
+  {
+    "id": 71226,
+    "name": "CRNA TRAVA"
+  },
+  {
+    "id": 71234,
+    "name": "ČAJETINA"
+  },
+  {
+    "id": 71242,
+    "name": "ČAČAK"
+  },
+  {
+    "id": 71269,
+    "name": "ŠABAC"
+  },
+  {
+    "id": 71277,
+    "name": "LAPOVO"
+  },
+  {
+    "id": 71285,
+    "name": "NIŠKA BANJA"
+  },
+  {
+    "id": 71293,
+    "name": "SURČIN"
+  },
+  {
+    "id": 71307,
+    "name": "PANTELEJ"
+  },
+  {
+    "id": 71315,
+    "name": "CRVENI KRST"
+  },
+  {
+    "id": 71323,
+    "name": "PALILULA (NIŠ)"
+  },
+  {
+    "id": 71331,
+    "name": "MEDIJANA"
+  },
+  {
+    "id": 71340,
+    "name": "KOSTOLAC"
+  },
+  {
+    "id": 71358,
+    "name": "VRANJSKA BANJA"
+  },
+  {
+    "id": 71366,
+    "name": "SEVOJNO"
+  },
+  {
+    "id": 80012,
+    "name": "ADA"
+  },
+  {
+    "id": 80039,
+    "name": "ALIBUNAR"
+  },
+  {
+    "id": 80047,
+    "name": "APATIN"
+  },
+  {
+    "id": 80055,
+    "name": "BAČ"
+  },
+  {
+    "id": 80063,
+    "name": "BAČKA PALANKA"
+  },
+  {
+    "id": 80071,
+    "name": "BAČKA TOPOLA"
+  },
+  {
+    "id": 80080,
+    "name": "BAČKI PETROVAC"
+  },
+  {
+    "id": 80098,
+    "name": "BELA CRKVA"
+  },
+  {
+    "id": 80101,
+    "name": "BEOČIN"
+  },
+  {
+    "id": 80110,
+    "name": "BEČEJ"
+  },
+  {
+    "id": 80128,
+    "name": "VRŠAC"
+  },
+  {
+    "id": 80136,
+    "name": "ŽABALJ"
+  },
+  {
+    "id": 80144,
+    "name": "ŽITIŠTE"
+  },
+  {
+    "id": 80152,
+    "name": "ZRENJANIN"
+  },
+  {
+    "id": 80179,
+    "name": "INĐIJA"
+  },
+  {
+    "id": 80187,
+    "name": "IRIG"
+  },
+  {
+    "id": 80195,
+    "name": "KANJIŽA"
+  },
+  {
+    "id": 80209,
+    "name": "KIKINDA"
+  },
+  {
+    "id": 80217,
+    "name": "KOVAČICA"
+  },
+  {
+    "id": 80225,
+    "name": "KOVIN"
+  },
+  {
+    "id": 80233,
+    "name": "KULA"
+  },
+  {
+    "id": 80241,
+    "name": "MALI IĐOŠ"
+  },
+  {
+    "id": 80250,
+    "name": "NOVA CRNJA"
+  },
+  {
+    "id": 80268,
+    "name": "NOVI BEČEJ"
+  },
+  {
+    "id": 80276,
+    "name": "NOVI KNEŽEVAC"
+  },
+  {
+    "id": 80292,
+    "name": "OPOVO"
+  },
+  {
+    "id": 80306,
+    "name": "ODŽACI"
+  },
+  {
+    "id": 80314,
+    "name": "PANČEVO"
+  },
+  {
+    "id": 80322,
+    "name": "PEĆINCI"
+  },
+  {
+    "id": 80349,
+    "name": "PLANDIŠTE"
+  },
+  {
+    "id": 80357,
+    "name": "RUMA"
+  },
+  {
+    "id": 80365,
+    "name": "SENTA"
+  },
+  {
+    "id": 80373,
+    "name": "SEČANJ"
+  },
+  {
+    "id": 80381,
+    "name": "SOMBOR"
+  },
+  {
+    "id": 80390,
+    "name": "SRBOBRAN"
+  },
+  {
+    "id": 80403,
+    "name": "SREMSKA MITROVICA"
+  },
+  {
+    "id": 80411,
+    "name": "SREMSKI KARLOVCI"
+  },
+  {
+    "id": 80420,
+    "name": "STARA PAZOVA"
+  },
+  {
+    "id": 80438,
+    "name": "SUBOTICA"
+  },
+  {
+    "id": 80446,
+    "name": "TEMERIN"
+  },
+  {
+    "id": 80454,
+    "name": "TITEL"
+  },
+  {
+    "id": 80462,
+    "name": "VRBAS"
+  },
+  {
+    "id": 80489,
+    "name": "ČOKA"
+  },
+  {
+    "id": 80497,
+    "name": "ŠID"
+  },
+  {
+    "id": 89010,
+    "name": "NOVI SAD"
+  }
+]
