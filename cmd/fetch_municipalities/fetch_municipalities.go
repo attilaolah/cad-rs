@@ -4,17 +4,24 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"sort"
 
 	"github.com/attilaolah/ekat/municipalities"
 )
 
 func main() {
-	ms, err := municipalities.FetchMunicipalities()
-	if err != nil {
+	all := []*municipalities.Municipality{}
+	ms, errs := municipalities.FetchAll()
+	go func() {
+		for m := range ms {
+			all = append(all, m)
+		}
+	}()
+
+	for err := range errs {
 		log.Fatalf("error fetching municipalities: %v", err)
-		return
 	}
-	if err := json.NewEncoder(os.Stdout).Encode(&ms); err != nil {
-		log.Fatalf("error encoding municipalities: %v", err)
-	}
+
+	sort.Slice(all, func(i, j int) bool { return all[i].ID < all[j].ID })
+	json.NewEncoder(os.Stdout).Encode(&all)
 }

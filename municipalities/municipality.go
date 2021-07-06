@@ -3,25 +3,15 @@ package municipalities
 import (
 	"fmt"
 	"net/http"
-	"net/http/cookiejar"
-	"net/url"
-	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/attilaolah/ekat/latin"
-	"golang.org/x/net/html"
+	"github.com/gocolly/colly"
 )
 
 // The eKatastar Public Access URL.
-var eKatURL *url.URL
-
-func init() {
-	var err error
-	if eKatURL, err = url.Parse("https://katastar.rgz.gov.rs/eKatastarPublic/PublicAccess.aspx"); err != nil {
-		panic(err)
-	}
-}
+const eKatURL = "https://katastar.rgz.gov.rs/eKatastarPublic/PublicAccess.aspx"
 
 // Municipality represents a municipality as described here:
 // https://en.wikipedia.org/wiki/Municipalities_and_cities_of_Serbia
@@ -32,117 +22,101 @@ type Municipality struct {
 	CadastralMunicipalities []*CadastralMunicipality `json:"cadastral_municipalities,omitempty"`
 }
 
-func FetchMunicipalities() ([]*Municipality, error) {
-	res, err := http.Get(eKatURL.String())
-	if err != nil {
-		return nil, fmt.Errorf("error fetching %q: %w", eKatURL, err)
-	}
-	defer func() {
-		err = res.Body.Close()
-	}()
+// FetchAll fetches all municipality data.
+func FetchAll() (chan *Municipality, chan error) {
+	ms := make(chan *Municipality)
+	errs := make(chan error)
+	seen := map[int64]struct{}{}
 
-	doc, err := html.Parse(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("error parsing page at %q: %w", eKatURL, err)
-	}
-
-	const (
-		tag = "select"
-		id  = "ContentPlaceHolder1_getOpstinaKO_dropOpstina"
+	c := colly.NewCollector(
+		// Allow revisits, since only the cookie differs.
+		colly.AllowURLRevisit(),
 	)
-	sel := byTagID(doc, tag, id)
-	if sel == nil {
-		return nil, fmt.Errorf("error parsing page at %q: <%s id=%q> not found", eKatURL, tag, id)
-	}
+	// But disable cookie handling; we'll set the cookie manually.
+	c.DisableCookies()
 
-	ms := []*Municipality{}
-	for opt := sel.FirstChild; opt != nil; opt = opt.NextSibling {
-		if opt.Data != "option" {
-			continue
+	c.OnHTML("select#ContentPlaceHolder1_getOpstinaKO_dropOpstina>option", func(opt *colly.HTMLElement) {
+		id, err := strconv.ParseInt(opt.Attr("value"), 10, 64)
+		if err != nil {
+			errs <- fmt.Errorf("error parsing ID: %w", err)
+			return
 		}
-		tn := opt.FirstChild
-		if tn == nil {
-			return nil, fmt.Errorf("error parsing %s: no child node", opt)
+		if _, ok := seen[id]; ok {
+			return // already visited
 		}
-		m := Municipality{
-			Name: strings.TrimSpace(strings.ToUpper(latin.RemoveDigraphs.Replace(latin.ToLatin.Replace(tn.Data)))),
+		seen[id] = struct{}{}
+
+		ms <- &Municipality{
+			ID:   id,
+			Name: cleanup(opt.Text),
 		}
 
-		// Find the ID
-		for _, a := range opt.Attr {
-			if a.Key == "value" {
-				if m.ID, err = strconv.ParseInt(a.Val, 10, 64); err != nil {
-					return nil, fmt.Errorf("error parsing %s: error parsing ID from %q: %w", opt, a.Val, err)
-				}
-				break
-			}
+		if id != 80438 { // Subotica
+			return
 		}
-		if m.ID == 0 {
-			return nil, fmt.Errorf("error parsing %s: could not parse ID", opt)
+
+		if err := c.Request(http.MethodGet, eKatURL, nil, nil, http.Header{
+			"cookie": []string{fmt.Sprintf("KnWebPublicGetOpstinaKO=SelectedValueOpstina=%d", id)},
+		}); err != nil {
+			errs <- err
 		}
-		ms = append(ms, &m)
-	}
-
-	sort.Slice(ms, func(i, j int) bool { return ms[i].ID < ms[j].ID })
-
-	return ms, err
-}
-
-// Populate fetches cadastral municipalities.
-func (m *Municipality) Populate() error {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return fmt.Errorf("error creating cookie jar: %w", err)
-	}
-	jar.SetCookies(eKatURL, []*http.Cookie{
-		&http.Cookie{Name: "KnWebPublicGetOpstinaKO", Value: fmt.Sprintf("SelectedValueOpstina=%d", m.ID)},
 	})
 
-	res, err := (&http.Client{Jar: jar}).Get(eKatURL.String())
-	if err != nil {
-		return err
-	}
-	defer func() {
-		err = res.Body.Close()
+	c.OnHTML("table#ContentPlaceHolder1_getOpstinaKO_GridView", func(tbl *colly.HTMLElement) {
+		tbl.ForEach("tr", func(row int, tr *colly.HTMLElement) {
+			cm := CadastralMunicipality{}
+			tr.ForEach("td", func(col int, td *colly.HTMLElement) {
+				val := cleanup(td.Text)
+				if col == 1 {
+					cm.Name = val
+					return
+				}
+				if col == 2 {
+					id, err := strconv.ParseInt(val, 10, 64)
+					if err != nil {
+						errs <- fmt.Errorf("error parsing ID: %w", err)
+						return
+					}
+					cm.ID = id
+					return
+				}
+				if col == 3 {
+					// TODO: Parse Municipality ID!
+				}
+			})
+			if cm.ID == 0 {
+				return
+			}
+			//fmt.Println("KM:", cm)
+		})
+	})
+
+	c.OnResponse(func(res *colly.Response) {
+		//fmt.Println("Got response for:", res.Request.URL, res.Request.Headers)
+	})
+
+	c.OnError(func(res *colly.Response, err error) {
+		errs <- err
+	})
+
+	go func() {
+		if err := c.Limit(&colly.LimitRule{
+			DomainGlob:  "katastar.rgz.gov.rs",
+			Parallelism: 2,
+		}); err != nil {
+			errs <- err
+		}
+		if err := c.Visit(eKatURL); err != nil {
+			errs <- err
+		}
+		c.Wait()
+		close(errs)
+		close(ms)
 	}()
 
-	//io.Copy(os.Stdout, res.Body)
-
-	doc, err := html.Parse(res.Body)
-	if err != nil {
-		return fmt.Errorf("error parsing page at %q: %w", eKatURL, err)
-	}
-
-	const (
-		tag = "table"
-		id  = "ContentPlaceHolder1_getOpstinaKO_GridView"
-	)
-	tbl := byTagID(doc, tag, id)
-	if tbl == nil {
-		return fmt.Errorf("error parsing page at %q: <%s id=%q> not found", eKatURL, tag, id)
-	}
-
-	return err
+	return ms, errs
 }
 
-// Deptch-first search by HTML tag & ID attribute.
-func byTagID(n *html.Node, tag, id string) *html.Node {
-	if n.Type == html.ElementNode && n.Data == tag {
-		//fmt.Println("###", n)
-		for _, a := range n.Attr {
-			//fmt.Println("### > ", a)
-			//if a.Key == "id" {
-			//	fmt.Println("???", a.Val, "==", id, "->", a.Val == id)
-			//}
-			if a.Key == "id" && a.Val == id {
-				return n
-			}
-		}
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		if c := byTagID(c, tag, id); c != nil {
-			return c
-		}
-	}
-	return nil
+func cleanup(text string) string {
+	return strings.TrimSpace(strings.ToUpper(latin.RemoveDigraphs.Replace(latin.ToLatin.Replace(text))))
 }
