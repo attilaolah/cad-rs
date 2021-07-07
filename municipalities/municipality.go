@@ -60,7 +60,14 @@ func FetchAll() ([]*Municipality, error) {
 		cm := CadastralMunicipality{}
 		tr.ForEach("td", func(col int, td *colly.HTMLElement) {
 			if col == 0 {
-				cm.Type = cleanup(td.ChildAttr("img", "alt"))
+				s := td.ChildAttr("img", "src")
+				s = strings.TrimSuffix(strings.TrimPrefix(s, "images/kn_status_"), ".gif")
+				typ, err := strconv.ParseInt(s, 10, 64)
+				if err != nil {
+					errs <- fmt.Errorf("error parsing cadastre type: %w", err)
+					return
+				}
+				cm.Type = CadastreType(typ)
 				return
 			}
 			if col == 1 {
