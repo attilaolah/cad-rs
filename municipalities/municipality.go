@@ -49,10 +49,6 @@ func FetchAll() ([]*Municipality, error) {
 			Name: cleanup(opt.Text),
 		}
 
-		if id != 80438 { // Subotica
-			return
-		}
-
 		if err := c.Request(http.MethodGet, eKatURL, nil, nil, http.Header{
 			"cookie": []string{fmt.Sprintf("KnWebPublicGetOpstinaKO=SelectedValueOpstina=%d", id)},
 		}); err != nil {
