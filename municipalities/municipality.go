@@ -60,7 +60,7 @@ func FetchAll() ([]*Municipality, error) {
 		cm := CadastralMunicipality{}
 		tr.ForEach("td", func(col int, td *colly.HTMLElement) {
 			if col == 0 {
-				cm.Type = cleanup(td.ChildAttr("img", "title"))
+				cm.Type = cleanup(td.ChildAttr("img", "alt"))
 				return
 			}
 			if col == 1 {
