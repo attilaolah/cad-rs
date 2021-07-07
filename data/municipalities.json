@@ -493,7 +493,29 @@
   },
   {
     "id": 80012,
-    "name": "ADA"
+    "name": "ADA",
+    "cadastral_municipalities": [
+      {
+        "id": 803448,
+        "name": "ADA",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 803588,
+        "name": "MOL",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 803634,
+        "name": "OBORNJAČA",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 803642,
+        "name": "UTRINE",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      }
+    ]
   },
   {
     "id": 80039,
@@ -645,7 +667,64 @@
   },
   {
     "id": 80438,
-    "name": "SUBOTICA"
+    "name": "SUBOTICA",
+    "cadastral_municipalities": [
+      {
+        "id": 804339,
+        "name": "BAČKI VINOGRADI",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804347,
+        "name": "BAJMOK",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804363,
+        "name": "BIKOVO",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804371,
+        "name": "ČANTAVIR",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804398,
+        "name": "DONJI GRAD",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804410,
+        "name": "ĐURĐIN",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804479,
+        "name": "NOVI GRAD",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804495,
+        "name": "PALIĆ",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804517,
+        "name": "STARI GRAD",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804525,
+        "name": "TAVANKUT",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      },
+      {
+        "id": 804533,
+        "name": "ŽEDNIK",
+        "type": "KATASTAR NEPOKRETNOSTI"
+      }
+    ]
   },
   {
     "id": 80446,
