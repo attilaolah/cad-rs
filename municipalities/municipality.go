@@ -85,7 +85,8 @@ func FetchAll() ([]*Municipality, error) {
 				return
 			}
 			if col == 3 {
-				s := strings.TrimPrefix(td.ChildAttr("a", "href"), "FindObjekat.aspx?OpstinaID=")
+				s := td.ChildAttr("a", "href")
+				s = strings.TrimPrefix(s, "FindObjekat.aspx?OpstinaID=")
 				id, err := strconv.ParseInt(s, 10, 64)
 				if err != nil {
 					errs <- fmt.Errorf("error parsing ID: %w", err)
@@ -136,5 +137,9 @@ func FetchAll() ([]*Municipality, error) {
 }
 
 func cleanup(text string) string {
-	return strings.TrimSpace(strings.ToUpper(latin.RemoveDigraphs.Replace(latin.ToLatin.Replace(text))))
+	text = strings.TrimSpace(text)
+	text = latin.ToLatin.Replace(text)
+	text = latin.RemoveDigraphs.Replace(text)
+	text = strings.ToUpper(text)
+	return text
 }
