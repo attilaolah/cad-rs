@@ -6,8 +6,8 @@ go_library(
     importpath = "github.com/attilaolah/ekat/scrapers",
     visibility = ["//visibility:public"],
     deps = [
-        "//latin",
         "//proto",
+        "//text",
         "@com_github_gocolly_colly//:go_default_library",
     ],
 )

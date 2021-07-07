@@ -9,8 +9,8 @@ import (
 
 	"github.com/gocolly/colly"
 
-	"github.com/attilaolah/ekat/latin"
 	"github.com/attilaolah/ekat/proto"
+	"github.com/attilaolah/ekat/text"
 )
 
 // The eKatastar Public Access URL.
@@ -133,10 +133,10 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 	return ms, nil
 }
 
-func cleanup(text string) string {
-	text = strings.TrimSpace(text)
-	text = latin.ToLatin.Replace(text)
-	text = latin.RemoveDigraphs.Replace(text)
-	text = strings.ToUpper(text)
-	return text
+func cleanup(s string) string {
+	s = strings.TrimSpace(s)
+	s = text.ToLatin.Replace(s)
+	s = text.RemoveDigraphs.Replace(s)
+	s = strings.ToUpper(s)
+	return s
 }
