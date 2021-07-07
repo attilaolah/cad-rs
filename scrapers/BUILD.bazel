@@ -1,9 +1,9 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "municipalities",
+    name = "scrapers",
     srcs = ["municipalities.go"],
-    importpath = "github.com/attilaolah/ekat/municipalities",
+    importpath = "github.com/attilaolah/ekat/scrapers",
     visibility = ["//visibility:public"],
     deps = [
         "//latin",

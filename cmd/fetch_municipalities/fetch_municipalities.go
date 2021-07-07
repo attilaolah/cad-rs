@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/ekat/municipalities"
+	"github.com/attilaolah/ekat/scrapers"
 )
 
 var (
@@ -25,7 +25,7 @@ var (
 func main() {
 	flag.Parse()
 
-	ms, err := municipalities.FetchAll()
+	ms, err := scrapers.ScrapeMunicipalities()
 	if err != nil {
 		log.Fatalf("error fetching municipalities: %v", err)
 	}

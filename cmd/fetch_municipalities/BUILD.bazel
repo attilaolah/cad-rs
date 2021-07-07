@@ -11,5 +11,5 @@ go_library(
     srcs = ["fetch_municipalities.go"],
     importpath = "github.com/attilaolah/ekat/cmd/fetch_municipalities",
     visibility = ["//visibility:private"],
-    deps = ["//municipalities"],
+    deps = ["//scrapers"],
 )

@@ -1,4 +1,4 @@
-package municipalities
+package scrapers
 
 import (
 	"fmt"
@@ -16,8 +16,8 @@ import (
 // The eKatastar Public Access URL.
 const eKatURL = "https://katastar.rgz.gov.rs/eKatastarPublic/PublicAccess.aspx"
 
-// FetchAll fetches all municipality data.
-func FetchAll() ([]*proto.Municipality, error) {
+// ScrapeMunicipalities fetches all municipality data.
+func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 	mmap := map[int64]*proto.Municipality{}
 	errs := make(chan error)
 
@@ -40,6 +40,10 @@ func FetchAll() ([]*proto.Municipality, error) {
 		mmap[id] = &proto.Municipality{
 			Id:   id,
 			Name: cleanup(opt.Text),
+		}
+
+		if cleanup(opt.Text) != "SUBOTICA" {
+			return
 		}
 
 		if err := c.Request(http.MethodGet, eKatURL, nil, nil, http.Header{
