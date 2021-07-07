@@ -7,25 +7,18 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/attilaolah/ekat/latin"
 	"github.com/gocolly/colly"
+
+	"github.com/attilaolah/ekat/latin"
+	"github.com/attilaolah/ekat/proto"
 )
 
 // The eKatastar Public Access URL.
 const eKatURL = "https://katastar.rgz.gov.rs/eKatastarPublic/PublicAccess.aspx"
 
-// Municipality represents a municipality as described here:
-// https://en.wikipedia.org/wiki/Municipalities_and_cities_of_Serbia
-type Municipality struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-
-	CadastralMunicipalities []*CadastralMunicipality `json:"cadastral_municipalities,omitempty"`
-}
-
 // FetchAll fetches all municipality data.
-func FetchAll() ([]*Municipality, error) {
-	mmap := map[int64]*Municipality{}
+func FetchAll() ([]*proto.Municipality, error) {
+	mmap := map[int64]*proto.Municipality{}
 	errs := make(chan error)
 
 	c := colly.NewCollector(
@@ -44,8 +37,8 @@ func FetchAll() ([]*Municipality, error) {
 		if _, ok := mmap[id]; ok {
 			return // already visited
 		}
-		mmap[id] = &Municipality{
-			ID:   id,
+		mmap[id] = &proto.Municipality{
+			Id:   id,
 			Name: cleanup(opt.Text),
 		}
 
@@ -57,7 +50,7 @@ func FetchAll() ([]*Municipality, error) {
 	})
 
 	c.OnHTML("table#ContentPlaceHolder1_getOpstinaKO_GridView>tbody>tr:not(.header)", func(tr *colly.HTMLElement) {
-		cm := CadastralMunicipality{}
+		cm := proto.CadastralMunicipality{}
 		tr.ForEach("td", func(col int, td *colly.HTMLElement) {
 			if col == 0 {
 				s := td.ChildAttr("img", "src")
@@ -67,7 +60,7 @@ func FetchAll() ([]*Municipality, error) {
 					errs <- fmt.Errorf("error parsing cadastre type: %w", err)
 					return
 				}
-				cm.Type = CadastreType(typ)
+				cm.CadastreType = proto.CadastralMunicipality_CadastreType(typ)
 				return
 			}
 			if col == 1 {
@@ -81,7 +74,7 @@ func FetchAll() ([]*Municipality, error) {
 					errs <- fmt.Errorf("error parsing ID: %w", err)
 					return
 				}
-				cm.ID = id
+				cm.Id = id
 				return
 			}
 			if col == 3 {
@@ -124,14 +117,14 @@ func FetchAll() ([]*Municipality, error) {
 		return nil, err
 	}
 
-	ms := []*Municipality{}
+	ms := []*proto.Municipality{}
 	for _, m := range mmap {
 		sort.Slice(m.CadastralMunicipalities, func(i, j int) bool {
-			return m.CadastralMunicipalities[i].ID < m.CadastralMunicipalities[j].ID
+			return m.CadastralMunicipalities[i].Id < m.CadastralMunicipalities[j].Id
 		})
 		ms = append(ms, m)
 	}
-	sort.Slice(ms, func(i, j int) bool { return ms[i].ID < ms[j].ID })
+	sort.Slice(ms, func(i, j int) bool { return ms[i].Id < ms[j].Id })
 
 	return ms, nil
 }

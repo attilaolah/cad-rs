@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+go_proto_library(
+    name = "proto",
+    importpath = "github.com/attilaolah/ekat/proto",
+    protos = [":municipalities"],
+    visibility = ["//:__subpackages__"],
+)
+
+proto_library(
+    name = "municipalities",
+    srcs = ["municipalities.proto"],
+)

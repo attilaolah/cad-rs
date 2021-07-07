@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package ekat;
+
+option go_package = "github.com/attilaolah/ekat/proto";
+
+// Municipality represents a municipality as described here:
+// https://en.wikipedia.org/wiki/Municipalities_and_cities_of_Serbia
+message Municipality {
+  int64 id = 1;
+  string name = 2;
+
+  repeated CadastralMunicipality cadastral_municipalities = 3;
+}
+
+message CadastralMunicipality {
+  int64 id = 1;
+  string name = 2;
+
+  enum CadastreType {
+    UNKNOWN = 0;
+    // Katastar nepokretnosti
+    REAL_ESTATE_CADASTRE = 3;
+    // Katastar nepokretnosti na delu katastarske opštine
+    PARTIAL_REAL_ESTATE_CADASTRE = 5;
+    // Osnivanje katastra nepokretnosti kroz postupak komasacije
+    FORMING_REAL_ESTATE_CADASTRE = 9;
+  }
+
+  CadastreType cadastre_type = 3;
+}

@@ -2,14 +2,12 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "municipalities",
-    srcs = [
-        "cadastral_municipalities.go",
-        "municipality.go",
-    ],
+    srcs = ["municipalities.go"],
     importpath = "github.com/attilaolah/ekat/municipalities",
     visibility = ["//visibility:public"],
     deps = [
         "//latin",
+        "//proto",
         "@com_github_gocolly_colly//:go_default_library",
     ],
 )
