@@ -3,6 +3,7 @@ package municipalities
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -23,10 +24,9 @@ type Municipality struct {
 }
 
 // FetchAll fetches all municipality data.
-func FetchAll() (chan *Municipality, chan error) {
-	ms := make(chan *Municipality)
+func FetchAll() ([]*Municipality, error) {
+	mmap := map[int64]*Municipality{}
 	errs := make(chan error)
-	seen := map[int64]struct{}{}
 
 	c := colly.NewCollector(
 		// Allow revisits, since only the cookie differs.
@@ -41,12 +41,10 @@ func FetchAll() (chan *Municipality, chan error) {
 			errs <- fmt.Errorf("error parsing ID: %w", err)
 			return
 		}
-		if _, ok := seen[id]; ok {
+		if _, ok := mmap[id]; ok {
 			return // already visited
 		}
-		seen[id] = struct{}{}
-
-		ms <- &Municipality{
+		mmap[id] = &Municipality{
 			ID:   id,
 			Name: cleanup(opt.Text),
 		}
@@ -62,37 +60,42 @@ func FetchAll() (chan *Municipality, chan error) {
 		}
 	})
 
-	c.OnHTML("table#ContentPlaceHolder1_getOpstinaKO_GridView", func(tbl *colly.HTMLElement) {
-		tbl.ForEach("tr", func(row int, tr *colly.HTMLElement) {
-			cm := CadastralMunicipality{}
-			tr.ForEach("td", func(col int, td *colly.HTMLElement) {
-				val := cleanup(td.Text)
-				if col == 1 {
-					cm.Name = val
-					return
-				}
-				if col == 2 {
-					id, err := strconv.ParseInt(val, 10, 64)
-					if err != nil {
-						errs <- fmt.Errorf("error parsing ID: %w", err)
-						return
-					}
-					cm.ID = id
-					return
-				}
-				if col == 3 {
-					// TODO: Parse Municipality ID!
-				}
-			})
-			if cm.ID == 0 {
+	c.OnHTML("table#ContentPlaceHolder1_getOpstinaKO_GridView>tbody>tr:not(.header)", func(tr *colly.HTMLElement) {
+		cm := CadastralMunicipality{}
+		tr.ForEach("td", func(col int, td *colly.HTMLElement) {
+			if col == 0 {
+				cm.Type = cleanup(td.ChildAttr("img", "title"))
 				return
 			}
-			//fmt.Println("KM:", cm)
+			if col == 1 {
+				cm.Name = cleanup(td.Text)
+				return
+			}
+			if col == 2 {
+				s := strings.TrimSpace(td.Text)
+				id, err := strconv.ParseInt(s, 10, 64)
+				if err != nil {
+					errs <- fmt.Errorf("error parsing ID: %w", err)
+					return
+				}
+				cm.ID = id
+				return
+			}
+			if col == 3 {
+				s := strings.TrimPrefix(td.ChildAttr("a", "href"), "FindObjekat.aspx?OpstinaID=")
+				id, err := strconv.ParseInt(s, 10, 64)
+				if err != nil {
+					errs <- fmt.Errorf("error parsing ID: %w", err)
+					return
+				}
+				m := mmap[id]
+				if m == nil {
+					errs <- fmt.Errorf("municipality id=%d not found", id)
+					return
+				}
+				m.CadastralMunicipalities = append(m.CadastralMunicipalities, &cm)
+			}
 		})
-	})
-
-	c.OnResponse(func(res *colly.Response) {
-		//fmt.Println("Got response for:", res.Request.URL, res.Request.Headers)
 	})
 
 	c.OnError(func(res *colly.Response, err error) {
@@ -111,10 +114,22 @@ func FetchAll() (chan *Municipality, chan error) {
 		}
 		c.Wait()
 		close(errs)
-		close(ms)
 	}()
 
-	return ms, errs
+	for err := range errs {
+		return nil, err
+	}
+
+	ms := []*Municipality{}
+	for _, m := range mmap {
+		sort.Slice(m.CadastralMunicipalities, func(i, j int) bool {
+			return m.CadastralMunicipalities[i].ID < m.CadastralMunicipalities[j].ID
+		})
+		ms = append(ms, m)
+	}
+	sort.Slice(ms, func(i, j int) bool { return ms[i].ID < ms[j].ID })
+
+	return ms, nil
 }
 
 func cleanup(text string) string {
