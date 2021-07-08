@@ -11,5 +11,8 @@ go_library(
     srcs = ["fetch_captchas.go"],
     importpath = "github.com/attilaolah/ekat/cmd/fetch_captchas",
     visibility = ["//visibility:private"],
-    deps = ["//scrapers"],
+    deps = [
+        "//proto",
+        "//scrapers",
+    ],
 )

@@ -7,7 +7,7 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/attilaolah/ekat/proto";
 
 message Captcha {
-  string guid = 1; // UUID
+  string id = 1; // UUID
 
   enum Type {
     UNKNOWN = 0;
@@ -16,15 +16,19 @@ message Captcha {
   }
   Type type = 2;
 
-  // Captcha value + 1, base-36-encoded.
-  // Zero means unknown/unset. Subtract one and base36-decode to get the value.
-  int32 b36p1 = 3;
-
   message Sample {
     string sha1 = 1;
+    string content_type = 2;
     // HTTP Date response header value:
-    google.protobuf.Timestamp generated_at = 2;
+    google.protobuf.Timestamp generated_at = 3;
+    bytes data = 4;
   }
 
-  repeated Sample samples = 4;
+  repeated Sample samples = 3;
+
+  message Label {
+    // Captcha value + 1, base-36-encoded.
+    // Zero means unknown/unset. Subtract one and base36-decode to get the value.
+    int32 b36p1 = 3;
+  }
 }

@@ -88,7 +88,7 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 		}
 
 		cm.Store(id, &proto.Captcha{
-			Guid: id.String(),
+			Id:   id.String(),
 			Type: typ,
 		})
 
@@ -121,8 +121,10 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 
 		c := val.(*proto.Captcha)
 		c.Samples = append(c.Samples, &proto.Captcha_Sample{
-			Sha1:        fmt.Sprintf("%x", sha1.Sum(res.Body)),
+			Data:        res.Body,
+			ContentType: "image/jpeg",
 			GeneratedAt: timestamppb.New(ts),
+			Sha1:        fmt.Sprintf("%x", sha1.Sum(res.Body)),
 		})
 
 		if len(c.Samples) == samples {
@@ -133,9 +135,8 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 
 	go func() {
 		if err := coll.Limit(&colly.LimitRule{
-			DomainGlob:  "katastar.rgz.gov.rs",
-			Delay:       2 * time.Second,
-			RandomDelay: time.Second,
+			DomainGlob: "katastar.rgz.gov.rs",
+			Delay:      time.Second,
 		}); err != nil {
 			fail(err)
 			return
