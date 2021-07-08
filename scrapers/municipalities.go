@@ -14,7 +14,10 @@ import (
 )
 
 // The eKatastar Public Access URL.
-const eKatURL = "https://katastar.rgz.gov.rs/eKatastarPublic/PublicAccess.aspx"
+const (
+	eKatURL       = "https://katastar.rgz.gov.rs/eKatastarPublic"
+	eKatPubAccess = eKatURL + "/PublicAccess.aspx"
+)
 
 // ScrapeMunicipalities fetches all municipality data.
 func ScrapeMunicipalities() ([]*proto.Municipality, error) {
@@ -42,11 +45,7 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 			Name: cleanup(opt.Text),
 		}
 
-		if cleanup(opt.Text) != "SUBOTICA" {
-			return
-		}
-
-		if err := c.Request(http.MethodGet, eKatURL, nil, nil, http.Header{
+		if err := c.Request(http.MethodGet, eKatPubAccess, nil, nil, http.Header{
 			"cookie": []string{fmt.Sprintf("KnWebPublicGetOpstinaKO=SelectedValueOpstina=%d", id)},
 		}); err != nil {
 			errs <- err
@@ -110,7 +109,7 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 		}); err != nil {
 			errs <- err
 		}
-		if err := c.Visit(eKatURL); err != nil {
+		if err := c.Visit(eKatPubAccess); err != nil {
 			errs <- err
 		}
 		c.Wait()

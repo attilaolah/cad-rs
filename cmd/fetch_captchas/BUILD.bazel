@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_binary(
+    name = "fetch_captchas",
+    embed = [":fetch_captchas_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "fetch_captchas_lib",
+    srcs = ["fetch_captchas.go"],
+    importpath = "github.com/attilaolah/ekat/cmd/fetch_captchas",
+    visibility = ["//visibility:private"],
+    deps = ["//scrapers"],
+)

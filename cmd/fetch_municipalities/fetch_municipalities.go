@@ -10,17 +10,15 @@ import (
 	"github.com/attilaolah/ekat/scrapers"
 )
 
-var (
-	output = flag.String("output",
-		func() string {
-			workspace := os.Getenv("BUILD_WORKSPACE_DIRECTORY")
-			if workspace != "" {
-				return filepath.Join(workspace, "data", "municipalities.json")
-			}
-			return "-"
-		}(),
-		"Where to write the output file (- means stdout).")
-)
+var output = flag.String("output",
+	func() string {
+		workspace := os.Getenv("BUILD_WORKSPACE_DIRECTORY")
+		if workspace != "" {
+			return filepath.Join(workspace, "data", "municipalities.json")
+		}
+		return "-"
+	}(),
+	"Where to write the output file (- means stdout).")
 
 func main() {
 	flag.Parse()

@@ -2,12 +2,17 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "scrapers",
-    srcs = ["municipalities.go"],
+    srcs = [
+        "captchas.go",
+        "municipalities.go",
+    ],
     importpath = "github.com/attilaolah/ekat/scrapers",
     visibility = ["//visibility:public"],
     deps = [
         "//proto",
         "//text",
-        "@com_github_gocolly_colly//:go_default_library",
+        "@com_github_gocolly_colly//:colly",
+        "@com_github_google_uuid//:go_default_library",
+        "@org_golang_google_protobuf//types/known/timestamppb:go_default_library",
     ],
 )
