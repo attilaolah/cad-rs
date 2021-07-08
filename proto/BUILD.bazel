@@ -1,13 +1,23 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 go_proto_library(
     name = "proto",
     importpath = "github.com/attilaolah/ekat/proto",
-    protos = [":municipalities"],
-    visibility = ["//:__subpackages__"],
+    protos = [
+        ":captchas",
+        ":municipalities",
+    ],
+    visibility = ["//visibility:public"],
 )
 
 proto_library(
     name = "municipalities",
     srcs = ["municipalities.proto"],
+)
+
+proto_library(
+    name = "captchas",
+    srcs = ["captchas.proto"],
+    deps = ["@com_google_protobuf//:timestamp_proto"],
 )
