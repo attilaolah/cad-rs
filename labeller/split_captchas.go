@@ -84,7 +84,7 @@ func Split4Captchas(datadir string) (ch chan image.Image, errs chan error) {
 				}
 				closef()
 
-				for part := range cut4(img) {
+				for _, part := range cut4(img) {
 					ch <- part
 				}
 			}
@@ -94,23 +94,28 @@ func Split4Captchas(datadir string) (ch chan image.Image, errs chan error) {
 	return ch, errs
 }
 
-// Cut a 4-letter captcha in four.
-func cut4(img image.Image) <-chan image.Image {
-	ch := make(chan image.Image)
+// Extract single letters from a 4-letter captcha.
+func cut4(img image.Image) [4]image.Image {
+	imgs := [4]image.Image{}
 
 	dx := img.Bounds().Dx()
 	dy := img.Bounds().Dy()
-	go func() {
-		defer close(ch)
-		for x := crop4l; x < dx-crop4l-crop4r; x += (dx - crop4l - crop4r) / 4 {
-			cut := image.NewRGBA(image.Rectangle{
-				Min: image.Point{},
-				Max: image.Point{(dx - crop4l - crop4r) / 4, dy - crop4t - crop4b},
-			})
-			draw.Over.Draw(cut, cut.Bounds(), img, image.Point{X: x, Y: crop4t})
-			ch <- cut
-		}
-	}()
 
-	return ch
+	for i := 0; i < 4; i++ {
+		cut := image.NewRGBA(image.Rectangle{
+			Min: image.Point{},
+			Max: image.Point{
+				X: (dx - crop4l - crop4r) / 4,
+				Y: dy - crop4t - crop4b,
+			},
+		})
+		ref := image.Point{
+			X: ((dx-crop4l-crop4r)/4)*i + crop4l,
+			Y: crop4t,
+		}
+		draw.Over.Draw(cut, cut.Bounds(), img, ref)
+		imgs[i] = cut
+	}
+
+	return imgs
 }
