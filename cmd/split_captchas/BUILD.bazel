@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_binary(
+    name = "split_captchas",
+    embed = [":split_captchas_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "split_captchas_lib",
+    srcs = ["split_captchas.go"],
+    importpath = "github.com/attilaolah/ekat/cmd/split_captchas",
+    visibility = ["//visibility:private"],
+    deps = ["//labeller"],
+)

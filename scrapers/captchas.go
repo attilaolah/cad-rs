@@ -56,13 +56,18 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 
 	f, err := os.Open(municipalities)
 	if err != nil {
-		go fail(err)
+		go fail(fmt.Errorf("failed to open %q: %w", municipalities, err))
 		return
 	}
 
 	ms := []*proto.Municipality{}
 	if err := json.NewDecoder(f).Decode(&ms); err != nil {
-		go fail(err)
+		f.Close()
+		go fail(fmt.Errorf("failed to decode %q: %w", f.Name(), err))
+		return
+	}
+	if err = f.Close(); err != nil {
+		go fail(fmt.Errorf("failed to close %q: %w", f.Name(), err))
 		return
 	}
 

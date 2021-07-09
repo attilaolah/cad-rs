@@ -22,6 +22,7 @@ var (
 	dst = flag.String("output_dir",
 		filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data", "captchas"),
 		"Output directory for scraped metadata and images.")
+	samples = flag.Int("samples", 2, "Number of samples to download from each captcha.")
 )
 
 func main() {
@@ -51,7 +52,7 @@ func main() {
 
 	n := 0
 	sdir := filepath.Join(*dst, "samples")
-	cs, errs := scrapers.Scrape4Captchas(ctx, *municipalities, 2)
+	cs, errs := scrapers.Scrape4Captchas(ctx, *municipalities, *samples)
 
 	for {
 		select {
