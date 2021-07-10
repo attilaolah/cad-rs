@@ -12,9 +12,14 @@ import (
 	"github.com/attilaolah/ekat/labeller"
 )
 
-var datadir = flag.String("data_dir",
-	filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data", "captchas"),
-	"Directory containing gaptcha files.")
+var (
+	datadir = flag.String("data_dir",
+		filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data", "captchas"),
+		"Directory containing gaptcha files.")
+	tessdir = flag.String("tessdata_dir",
+		filepath.join(os.Getwd(), "external", "tessdata", "file"),
+		"Directory containing Tesseract trained data files (namely, eng.traineddata).")
+)
 
 func main() {
 	flag.Parse()
@@ -30,6 +35,13 @@ func main() {
 			http.Error(w, "image not found", http.StatusNotFound)
 			return
 		}
+
+		/*txt, err := labeller.OCR1(img)
+		if err != nil {
+			log.Printf("OCR error: %v", err)
+		}
+		log.Printf("RUNE: %q", txt)
+		*/
 
 		w.Header().Set("content-type", "image/png")
 		if err := png.Encode(w, img); err != nil {

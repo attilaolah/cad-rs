@@ -5,7 +5,7 @@ workspace(
     name = "ekat",
 )
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 http_archive(
     name = "bazel_skylib",
@@ -66,4 +66,11 @@ http_archive(
     name = "com_github_bazelbuild_buildtools",
     strip_prefix = "buildtools-master",
     url = "https://github.com/bazelbuild/buildtools/archive/master.zip",
+)
+
+http_file(
+    name = "tessdata",
+    sha256 = "8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba",
+    urls = ["https://github.com/tesseract-ocr/tessdata_best/raw/4.1.0/eng.traineddata"],
+    downloaded_file_path = "eng.traineddata",
 )

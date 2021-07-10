@@ -82,6 +82,13 @@ def go_dependencies():
         version = "v1.2.4",
     )
     go_repository(
+        name = "com_github_otiai10_gosseract",
+        importpath = "github.com/otiai10/gosseract",
+        sum = "h1:Ry5ltVdpdp4LAa2bMjsSJH34XHVOV7XMi41HtzL8X2I=",
+        version = "v2.2.1+incompatible",
+    )
+
+    go_repository(
         name = "com_github_pmezard_go_difflib",
         importpath = "github.com/pmezard/go-difflib",
         sum = "h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=",

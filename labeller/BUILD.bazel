@@ -2,8 +2,14 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "labeller",
-    srcs = ["split_captchas.go"],
+    srcs = [
+        "ocr_captchas.go",
+        "split_captchas.go",
+    ],
     importpath = "github.com/attilaolah/ekat/labeller",
     visibility = ["//visibility:public"],
-    deps = ["//proto"],
+    deps = [
+        "//proto",
+        "@com_github_otiai10_gosseract//:go_default_library",
+    ],
 )
