@@ -5,6 +5,7 @@ go_library(
     srcs = [
         "captchas.go",
         "municipalities.go",
+        "municipalities_files.go",
     ],
     importpath = "github.com/attilaolah/ekat/scrapers",
     visibility = ["//visibility:public"],

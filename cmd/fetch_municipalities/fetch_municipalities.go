@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"log"
 	"os"
@@ -10,44 +9,19 @@ import (
 	"github.com/attilaolah/ekat/scrapers"
 )
 
-var output = flag.String("output",
-	func() string {
-		workspace := os.Getenv("BUILD_WORKSPACE_DIRECTORY")
-		if workspace != "" {
-			return filepath.Join(workspace, "data", "municipalities.json")
-		}
-		return "-"
-	}(),
-	"Where to write the output file (- means stdout).")
+var dst = flag.String("output_dir",
+	filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data"),
+	"Output directory (root) for scraped data.")
 
 func main() {
 	flag.Parse()
 
 	ms, err := scrapers.ScrapeMunicipalities()
 	if err != nil {
-		log.Fatalf("error fetching municipalities: %v", err)
-	}
-	data, err := json.MarshalIndent(ms, "", "  ")
-	if err != nil {
-		log.Fatalf("error encoding municipalities: %v", err)
+		log.Fatalf("failed to fetch municipalities: %v", err)
 	}
 
-	var out *os.File = os.Stdout
-	if *output != "-" {
-		f, err := os.Create(*output)
-		if err != nil {
-			log.Fatalf("error creating output file: %v", err)
-		}
-		out = f
-		defer func() {
-			if err = out.Close(); err != nil {
-				log.Fatalf("error closing output file: %v", err)
-			}
-		}()
-	}
-
-	data = append(data, '\n')
-	if _, err = out.Write(data); err != nil {
-		log.Fatalf("error writing to output file: %v", err)
+	if err := scrapers.SaveMunicipalities(ms, *dst); err != nil {
+		log.Fatalf("failed to save municipalities data: %v", err)
 	}
 }
