@@ -17,10 +17,10 @@ import (
 
 var (
 	municipalities = flag.String("municipalities",
-		filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data", "municipalities.json"),
+		filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "dist", "municipalities+cadastral_municipalities.json"),
 		"JSON file containing municipalities.")
 	dst = flag.String("output_dir",
-		filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data", "captchas"),
+		filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "captchas"),
 		"Output directory for scraped metadata and images.")
 	samples = flag.Int("samples", 2, "Number of samples to download from each captcha.")
 )

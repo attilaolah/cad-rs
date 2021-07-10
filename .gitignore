@@ -18,4 +18,4 @@ bazel-*
 *.out
 
 # Ignore downloaded captcha files
-data/captchas
+captchas

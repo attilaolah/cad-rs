@@ -10,7 +10,7 @@ import (
 )
 
 var dst = flag.String("output_dir",
-	filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "data"),
+	filepath.Join(os.Getenv("BUILD_WORKSPACE_DIRECTORY"), "dist"),
 	"Output directory (root) for scraped data.")
 
 func main() {
