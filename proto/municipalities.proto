@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package ekat;
 
-option go_package = "github.com/attilaolah/ekat/proto";
+option go_package = "github.com/attilaolah/cad-rs/proto";
 
 // Municipality represents a municipality as described here:
 // https://en.wikipedia.org/wiki/Municipalities_and_cities_of_Serbia

@@ -9,7 +9,7 @@ go_binary(
 go_library(
     name = "split_captchas_lib",
     srcs = ["split_captchas.go"],
-    importpath = "github.com/attilaolah/ekat/cmd/split_captchas",
+    importpath = "github.com/attilaolah/cad-rs/cmd/split_captchas",
     visibility = ["//visibility:private"],
     deps = ["//labeller"],
 )

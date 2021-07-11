@@ -3,6 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "text",
     srcs = ["latin.go"],
-    importpath = "github.com/attilaolah/ekat/text",
+    importpath = "github.com/attilaolah/cad-rs/text",
     visibility = ["//visibility:public"],
 )

@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/ekat/proto"
+	"github.com/attilaolah/cad-rs/proto"
 )
 
 // Pre-crop 4-letter captchas, before slicing them up:

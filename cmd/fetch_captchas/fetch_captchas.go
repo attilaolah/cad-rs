@@ -11,8 +11,8 @@ import (
 	"os/signal"
 	"path/filepath"
 
-	"github.com/attilaolah/ekat/proto"
-	"github.com/attilaolah/ekat/scrapers"
+	"github.com/attilaolah/cad-rs/proto"
+	"github.com/attilaolah/cad-rs/scrapers"
 )
 
 var (

@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 go_proto_library(
     name = "proto",
-    importpath = "github.com/attilaolah/ekat/proto",
+    importpath = "github.com/attilaolah/cad-rs/proto",
     protos = [
         ":captchas",
         ":municipalities",

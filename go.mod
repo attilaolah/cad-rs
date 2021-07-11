@@ -1,4 +1,4 @@
-module github.com/attilaolah/ekat
+module github.com/attilaolah/cad-rs
 
 go 1.16
 

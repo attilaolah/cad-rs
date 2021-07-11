@@ -9,7 +9,7 @@ go_binary(
 go_library(
     name = "fetch_municipalities_lib",
     srcs = ["fetch_municipalities.go"],
-    importpath = "github.com/attilaolah/ekat/cmd/fetch_municipalities",
+    importpath = "github.com/attilaolah/cad-rs/cmd/fetch_municipalities",
     visibility = ["//visibility:private"],
     deps = ["//scrapers"],
 )

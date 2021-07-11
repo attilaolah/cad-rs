@@ -16,7 +16,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/attilaolah/ekat/proto"
+	"github.com/attilaolah/cad-rs/proto"
 )
 
 const (

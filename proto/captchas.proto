@@ -4,7 +4,7 @@ package ekat;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/attilaolah/ekat/proto";
+option go_package = "github.com/attilaolah/cad-rs/proto";
 
 message Captcha {
   string id = 1; // UUID

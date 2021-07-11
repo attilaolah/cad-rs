@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/ekat/scrapers"
+	"github.com/attilaolah/cad-rs/scrapers"
 )
 
 var dst = flag.String("output_dir",

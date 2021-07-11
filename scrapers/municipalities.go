@@ -9,8 +9,8 @@ import (
 
 	"github.com/gocolly/colly"
 
-	"github.com/attilaolah/ekat/proto"
-	"github.com/attilaolah/ekat/text"
+	"github.com/attilaolah/cad-rs/proto"
+	"github.com/attilaolah/cad-rs/text"
 )
 
 // The eKatastar Public Access URL.

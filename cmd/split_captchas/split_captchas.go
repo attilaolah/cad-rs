@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/ekat/labeller"
+	"github.com/attilaolah/cad-rs/labeller"
 )
 
 var datadir = flag.String("data_dir",

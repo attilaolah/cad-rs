@@ -2,7 +2,7 @@
 # See https://docs.bazel.build/versions/master/build-ref.html#workspace
 workspace(
     # How this workspace would be referenced with absolute labels from another workspace
-    name = "ekat",
+    name = "cad_rs",
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")

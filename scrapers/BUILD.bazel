@@ -7,7 +7,7 @@ go_library(
         "municipalities.go",
         "municipalities_files.go",
     ],
-    importpath = "github.com/attilaolah/ekat/scrapers",
+    importpath = "github.com/attilaolah/cad-rs/scrapers",
     visibility = ["//visibility:public"],
     deps = [
         "//proto",

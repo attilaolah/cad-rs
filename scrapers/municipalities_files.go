@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/ekat/proto"
+	"github.com/attilaolah/cad-rs/proto"
 )
 
 // DirPerm encodes new directory permissions.

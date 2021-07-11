@@ -9,7 +9,7 @@ go_binary(
 go_library(
     name = "fetch_captchas_lib",
     srcs = ["fetch_captchas.go"],
-    importpath = "github.com/attilaolah/ekat/cmd/fetch_captchas",
+    importpath = "github.com/attilaolah/cad-rs/cmd/fetch_captchas",
     visibility = ["//visibility:private"],
     deps = [
         "//proto",
