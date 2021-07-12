@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ekat;
+package cad_rs;
 
 option go_package = "github.com/attilaolah/cad-rs/proto";
 
@@ -28,4 +28,9 @@ message CadastralMunicipality {
   }
 
   CadastreType cadastre_type = 3;
+}
+
+message Street {
+  int64 id = 1;
+  string full_name = 2;
 }

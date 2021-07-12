@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "fetch_streets_lib",
+    srcs = ["fetch_streets.go"],
+    importpath = "github.com/attilaolah/cad-rs/cmd/fetch_streets",
+    visibility = ["//visibility:private"],
+    deps = ["//scrapers"],
+)
+
+go_binary(
+    name = "fetch_streets",
+    embed = [":fetch_streets_lib"],
+    visibility = ["//visibility:public"],
+)

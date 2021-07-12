@@ -143,7 +143,7 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 			DomainGlob: "katastar.rgz.gov.rs",
 			Delay:      time.Second,
 		}); err != nil {
-			fail(err)
+			fail(fmt.Errorf("failed to set limit rule: %w", err))
 			return
 		}
 

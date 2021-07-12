@@ -107,10 +107,10 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 			DomainGlob:  "katastar.rgz.gov.rs",
 			Parallelism: 2,
 		}); err != nil {
-			errs <- err
+			errs <- fmt.Errorf("failed to set limit rule: %w", err)
 		}
 		if err := c.Visit(eKatPubAccess); err != nil {
-			errs <- err
+			errs <- fmt.Errorf("failed to fetch page at %q: %w", eKatPubAccess, err)
 		}
 		c.Wait()
 		close(errs)

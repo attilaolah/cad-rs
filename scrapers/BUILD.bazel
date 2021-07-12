@@ -6,6 +6,8 @@ go_library(
         "captchas.go",
         "municipalities.go",
         "municipalities_files.go",
+        "streets.go",
+        "streets_files.go",
     ],
     importpath = "github.com/attilaolah/cad-rs/scrapers",
     visibility = ["//visibility:public"],

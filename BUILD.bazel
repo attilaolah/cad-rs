@@ -4,7 +4,7 @@ load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 
 buildifier(name = "buildifier")
 
-# gazelle:prefix github.com/attilaolah/ekat
+# gazelle:prefix github.com/attilaolah/cad-rs
 gazelle(name = "gazelle")
 
 bzl_library(

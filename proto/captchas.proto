@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package ekat;
+package cad_rs;
 
 import "google/protobuf/timestamp.proto";
 
