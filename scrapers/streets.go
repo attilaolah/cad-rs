@@ -12,16 +12,16 @@ import (
 
 	"github.com/gocolly/colly"
 
-	"github.com/attilaolah/cad-rs/proto"
+	pb "github.com/attilaolah/cad-rs/proto"
 	"github.com/attilaolah/cad-rs/text"
 )
 
 const eKatSearchStreets = eKatURL + "/FindAdresa.aspx/PretragaUlica"
 
 type StreetSearchResults struct {
-	Query     string          `json:"query"`
-	Results   []*proto.Street `json:"results"`
-	UpdatedAt time.Time       `json:"updated_at"`
+	Query     string       `json:"query"`
+	Results   []*pb.Street `json:"results"`
+	UpdatedAt time.Time    `json:"updated_at"`
 }
 
 // ScrapeStreets fetches streets for a single municipality.
@@ -89,7 +89,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 				errs <- fmt.Errorf("failed to parse %q as integer: %w", row.Second, err)
 			}
 
-			st := proto.Street{
+			st := pb.Street{
 				Id:       id,
 				FullName: cleanup(row.First),
 			}
@@ -117,7 +117,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 		process := func(q string) bool {
 			buf <- &StreetSearchResults{
 				Query:   cleanup(q),
-				Results: []*proto.Street{},
+				Results: []*pb.Street{},
 			}
 
 			data, err := json.Marshal(struct {

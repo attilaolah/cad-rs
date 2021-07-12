@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/cad-rs/proto"
+	pb "github.com/attilaolah/cad-rs/proto"
 )
 
 // DirPerm encodes new directory permissions.
@@ -15,13 +15,13 @@ const DirPerm = 0o755
 // ScalarMunicipality is a Municipality with only scalar fields.
 // Non-scalar (i.e. message) fields are turned into references (i.e. IDs).
 type ScalarMunicipality struct {
-	proto.Municipality
+	pb.Municipality
 
 	CadastralMunicipalities []int64 `json:"cadastral_municipalities"`
 }
 
 // SaveMunicipalities stores municipality data in the expected directory layout.
-func SaveMunicipalities(ms []*proto.Municipality, dir string) error {
+func SaveMunicipalities(ms []*pb.Municipality, dir string) error {
 	{
 		data := make([]ScalarMunicipality, len(ms))
 		for i, m := range ms {

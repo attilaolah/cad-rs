@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/attilaolah/cad-rs/proto"
+	pb "github.com/attilaolah/cad-rs/proto"
 )
 
 // Pre-crop 4-letter captchas, before slicing them up:
@@ -56,7 +56,7 @@ func Split4Captchas(datadir string) (ch chan image.Image, errs chan error) {
 				}
 			}
 
-			c := proto.Captcha{}
+			c := pb.Captcha{}
 			if err = json.NewDecoder(f).Decode(&c); err != nil {
 				errs <- fmt.Errorf("failed to decode %q: %w", f.Name(), err)
 				closef()
@@ -64,7 +64,7 @@ func Split4Captchas(datadir string) (ch chan image.Image, errs chan error) {
 			}
 			closef()
 
-			if c.Type != proto.Captcha_ALPHANUM_4 {
+			if c.Type != pb.Captcha_ALPHANUM_4 {
 				continue // ignore other types
 			}
 

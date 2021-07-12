@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"path/filepath"
 
-	"github.com/attilaolah/cad-rs/proto"
+	pb "github.com/attilaolah/cad-rs/proto"
 	"github.com/attilaolah/cad-rs/scrapers"
 )
 
@@ -104,7 +104,7 @@ func main() {
 
 // Save the captcha metadata to a file, returning the filename.
 // The returned filename should be renamed (atomically) to its final name.
-func save(c *proto.Captcha) (string, error) {
+func save(c *pb.Captcha) (string, error) {
 	data, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("error encoding %q: %w", c.Id, err)
