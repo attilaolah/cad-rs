@@ -54,7 +54,6 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 	// Buffer size 1 to make sure only a single request is handled at a time.
 	buf := make(chan *StreetSearchResults, 1)
 
-	fmt.Printf("SCRAPE [%d]: ", mID)
 	coll.OnResponse(func(res *colly.Response) {
 		ts, err := time.Parse(time.RFC1123, res.Headers.Get("date"))
 		if err != nil {
@@ -99,7 +98,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			}
 		}
 
-		fmt.Println(len(sr.Results))
+		fmt.Printf("% 3d\n", len(sr.Results))
 		ss <- sr
 	})
 
@@ -134,7 +133,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 				return true // unexpected, no need to retry
 			}
 
-			fmt.Printf("%s: ", cleanup(q))
+			fmt.Printf("SCRAPE [%d]: %s:\t", mID, cleanup(q))
 			if err := coll.PostRaw(eKatSearchStreets, data); err != nil {
 				// errs <- fmt.Errorf("failed to fetch page at %q w/ data = %s: %w", eKatSearchStreets, data, err)
 				fmt.Print("SPLIT; ")
@@ -151,10 +150,12 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 		go genStreetSearchQueries(qs, errs, subdir)
 
 		retry := map[string]struct{}{}
+		failed := map[string]bool{}
 		for q := range qs {
 			if !process(q) {
 				// Retry with smaller chunks
 				retry[q] = struct{}{}
+				failed[q] = true
 			}
 		}
 		for len(retry) > 0 {
@@ -166,12 +167,13 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 
 			for _, c := range text.Azbuka {
 				for _, q := range []string{string(c) + q, q + string(c)} {
-					if fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q))); exists(errs, fn) {
+					if fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q))); exists(errs, fn) || failed[q] {
 						continue
 					}
 					if !process(q) {
 						// Retry with even smaller chunks (recursively)
 						retry[q] = struct{}{}
+						failed[q] = true
 					}
 				}
 			}
