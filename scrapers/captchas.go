@@ -14,9 +14,9 @@ import (
 
 	"github.com/gocolly/colly"
 	"github.com/google/uuid"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	tspb "google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/attilaolah/cad-rs/proto"
+	pb "github.com/attilaolah/cad-rs/proto"
 )
 
 const (
@@ -30,19 +30,19 @@ func init() {
 }
 
 // Scrape5Captchas scrapes 4-digit captchas.
-func Scrape4Captchas(ctx context.Context, municipalities string, samples int) (chan *proto.Captcha, chan error) {
-	return ScrapeCaptchas(ctx, proto.Captcha_ALPHANUM_4, municipalities, samples)
+func Scrape4Captchas(ctx context.Context, municipalities string, samples int) (chan *pb.Captcha, chan error) {
+	return ScrapeCaptchas(ctx, pb.Captcha_ALPHANUM_4, municipalities, samples)
 }
 
 // Scrape5Captchas scrapes 5-digit captchas.
-func Scrape5Captchas(ctx context.Context, municipalities string, samples int) (chan *proto.Captcha, chan error) {
-	return ScrapeCaptchas(ctx, proto.Captcha_ALPHANUM_5, municipalities, samples)
+func Scrape5Captchas(ctx context.Context, municipalities string, samples int) (chan *pb.Captcha, chan error) {
+	return ScrapeCaptchas(ctx, pb.Captcha_ALPHANUM_5, municipalities, samples)
 }
 
 // ScrapeCaptchas fetches captchas of any type.
 // It will keep generating captchas until the context is cancelled.
-func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities string, samples int) (cs chan *proto.Captcha, errs chan error) {
-	cs = make(chan *proto.Captcha)
+func ScrapeCaptchas(ctx context.Context, typ pb.Captcha_Type, municipalities string, samples int) (cs chan *pb.Captcha, errs chan error) {
+	cs = make(chan *pb.Captcha)
 	errs = make(chan error)
 
 	done := func() {
@@ -60,7 +60,7 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 		return
 	}
 
-	ms := []*proto.Municipality{}
+	ms := []*pb.Municipality{}
 	if err := json.NewDecoder(f).Decode(&ms); err != nil {
 		f.Close()
 		go fail(fmt.Errorf("failed to decode %q: %w", f.Name(), err))
@@ -92,7 +92,7 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 			return
 		}
 
-		cm.Store(id, &proto.Captcha{
+		cm.Store(id, &pb.Captcha{
 			Id:   id.String(),
 			Type: typ,
 		})
@@ -124,11 +124,11 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 			errs <- fmt.Errorf("captcha with UUID %q not found in map", id)
 		}
 
-		c := val.(*proto.Captcha)
-		c.Samples = append(c.Samples, &proto.Captcha_Sample{
+		c := val.(*pb.Captcha)
+		c.Samples = append(c.Samples, &pb.Captcha_Sample{
 			Data:        res.Body,
 			ContentType: "image/jpeg",
-			UpdatedAt:   timestamppb.New(ts),
+			UpdatedAt:   tspb.New(ts),
 			Sha1:        fmt.Sprintf("%x", sha1.Sum(res.Body)),
 		})
 
@@ -170,12 +170,12 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 }
 
 // Generate URLs that should contain a Captcha image of the given type.
-func genCaptchaPageURLs(ctx context.Context, urls chan<- string, ms []*proto.Municipality, typ proto.Captcha_Type) {
+func genCaptchaPageURLs(ctx context.Context, urls chan<- string, ms []*pb.Municipality, typ pb.Captcha_Type) {
 	for {
 		var url string
-		if typ == proto.Captcha_ALPHANUM_4 {
+		if typ == pb.Captcha_ALPHANUM_4 {
 			url = gen4CaptchaPageURL(ms)
-		} else if typ == proto.Captcha_ALPHANUM_5 {
+		} else if typ == pb.Captcha_ALPHANUM_5 {
 			url = gen5CaptchaPageURL(ms)
 		} else {
 			close(urls)
@@ -192,7 +192,7 @@ func genCaptchaPageURLs(ctx context.Context, urls chan<- string, ms []*proto.Mun
 	}
 }
 
-func gen4CaptchaPageURL(ms []*proto.Municipality) string {
+func gen4CaptchaPageURL(ms []*pb.Municipality) string {
 	var url string
 	if rand.Intn(2) == 0 {
 		url = eKatFindObj
@@ -209,7 +209,7 @@ func gen4CaptchaPageURL(ms []*proto.Municipality) string {
 	return strings.TrimSuffix(url, "?OpstinaID=%d")
 }
 
-func gen5CaptchaPageURL(ms []*proto.Municipality) string {
+func gen5CaptchaPageURL(ms []*pb.Municipality) string {
 	url := eKatFindParc
 	if len(ms) > 0 {
 		m := ms[rand.Intn(len(ms))]

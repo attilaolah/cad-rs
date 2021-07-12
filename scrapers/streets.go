@@ -61,6 +61,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			errs <- fmt.Errorf("failed to parse date header: %w", err)
 			return
 		}
+
 		if ct := strings.ToLower(res.Headers.Get("content-type")); ct != "application/json; charset=utf-8" {
 			errs <- fmt.Errorf("got unexpected response with content-type %q", ct)
 			return
@@ -165,6 +166,9 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 
 			for _, c := range text.Azbuka {
 				for _, q := range []string{string(c) + q, q + string(c)} {
+					if fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q))); !exists(errs, fn) {
+						continue
+					}
 					if !process(q) {
 						// Retry with even smaller chunks (recursively)
 						retry[q] = struct{}{}
@@ -197,11 +201,8 @@ func genStreetSearchQueries(qs chan<- string, errs chan<- error, subdir string) 
 	})
 
 	for _, q := range tmp {
-		fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q)))
-		if _, err := os.Stat(fn); os.IsNotExist(err) {
+		if fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q))); !exists(errs, fn) {
 			qs <- q
-		} else if err != nil {
-			errs <- fmt.Errorf("error checking for file %q: %w", fn, err)
 		}
 	}
 }
@@ -215,4 +216,13 @@ func ascii(s string) string {
 	s = text.RemoveDigraphs.Replace(s)
 	s = text.ToASCII.Replace(s)
 	return s
+}
+
+func exists(errs chan<- error, path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	} else if err != nil {
+		errs <- fmt.Errorf("error checking for file %q: %w", path, err)
+	}
+	return true
 }

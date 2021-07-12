@@ -6,10 +6,12 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
+	tspb "google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/attilaolah/cad-rs/proto"
+	pb "github.com/attilaolah/cad-rs/proto"
 	"github.com/attilaolah/cad-rs/text"
 )
 
@@ -20,8 +22,8 @@ const (
 )
 
 // ScrapeMunicipalities fetches all municipality data.
-func ScrapeMunicipalities() ([]*proto.Municipality, error) {
-	mmap := map[int64]*proto.Municipality{}
+func ScrapeMunicipalities() ([]*pb.Municipality, error) {
+	mmap := map[int64]*pb.Municipality{}
 	errs := make(chan error)
 
 	c := colly.NewCollector(
@@ -32,6 +34,12 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 	c.DisableCookies()
 
 	c.OnHTML("select#ContentPlaceHolder1_getOpstinaKO_dropOpstina>option", func(opt *colly.HTMLElement) {
+		ts, err := time.Parse(time.RFC1123, opt.Response.Headers.Get("date"))
+		if err != nil {
+			errs <- fmt.Errorf("failed to parse date header: %w", err)
+			return
+		}
+
 		id, err := strconv.ParseInt(opt.Attr("value"), 10, 64)
 		if err != nil {
 			errs <- fmt.Errorf("error parsing ID: %w", err)
@@ -40,9 +48,10 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 		if _, ok := mmap[id]; ok {
 			return // already visited
 		}
-		mmap[id] = &proto.Municipality{
-			Id:   id,
-			Name: cleanup(opt.Text),
+		mmap[id] = &pb.Municipality{
+			Id:        id,
+			Name:      cleanup(opt.Text),
+			UpdatedAt: tspb.New(ts),
 		}
 
 		if err := c.Request(http.MethodGet, eKatPubAccess, nil, nil, http.Header{
@@ -53,7 +62,15 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 	})
 
 	c.OnHTML("table#ContentPlaceHolder1_getOpstinaKO_GridView>tbody>tr:not(.header)", func(tr *colly.HTMLElement) {
-		cm := proto.CadastralMunicipality{}
+		ts, err := time.Parse(time.RFC1123, tr.Response.Headers.Get("date"))
+		if err != nil {
+			errs <- fmt.Errorf("failed to parse date header: %w", err)
+			return
+		}
+
+		cm := pb.CadastralMunicipality{
+			UpdatedAt: tspb.New(ts),
+		}
 		tr.ForEach("td", func(col int, td *colly.HTMLElement) {
 			if col == 0 {
 				s := td.ChildAttr("img", "src")
@@ -63,7 +80,7 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 					errs <- fmt.Errorf("error parsing cadastre type: %w", err)
 					return
 				}
-				cm.CadastreType = proto.CadastralMunicipality_CadastreType(typ)
+				cm.CadastreType = pb.CadastralMunicipality_CadastreType(typ)
 				return
 			}
 			if col == 1 {
@@ -120,7 +137,7 @@ func ScrapeMunicipalities() ([]*proto.Municipality, error) {
 		return nil, err
 	}
 
-	ms := []*proto.Municipality{}
+	ms := []*pb.Municipality{}
 	for _, m := range mmap {
 		sort.Slice(m.CadastralMunicipalities, func(i, j int) bool {
 			return m.CadastralMunicipalities[i].Id < m.CadastralMunicipalities[j].Id
