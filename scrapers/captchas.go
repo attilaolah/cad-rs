@@ -128,7 +128,7 @@ func ScrapeCaptchas(ctx context.Context, typ proto.Captcha_Type, municipalities 
 		c.Samples = append(c.Samples, &proto.Captcha_Sample{
 			Data:        res.Body,
 			ContentType: "image/jpeg",
-			GeneratedAt: timestamppb.New(ts),
+			UpdatedAt:   timestamppb.New(ts),
 			Sha1:        fmt.Sprintf("%x", sha1.Sum(res.Body)),
 		})
 

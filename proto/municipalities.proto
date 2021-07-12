@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package cad_rs;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/attilaolah/cad-rs/proto";
 
 // Municipality represents a municipality as described here:
@@ -11,6 +13,9 @@ message Municipality {
   string name = 2;
 
   repeated CadastralMunicipality cadastral_municipalities = 3;
+
+  // HTTP Date response header value:
+  google.protobuf.Timestamp updated_at = 4;
 }
 
 message CadastralMunicipality {
@@ -28,9 +33,15 @@ message CadastralMunicipality {
   }
 
   CadastreType cadastre_type = 3;
+
+  // HTTP Date response header value:
+  google.protobuf.Timestamp updated_at = 4;
 }
 
 message Street {
   int64 id = 1;
   string full_name = 2;
+
+  // HTTP Date response header value:
+  google.protobuf.Timestamp updated_at = 3;
 }

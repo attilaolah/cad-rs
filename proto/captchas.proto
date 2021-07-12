@@ -19,9 +19,10 @@ message Captcha {
   message Sample {
     string sha1 = 1;
     string content_type = 2;
+    bytes data = 3;
+
     // HTTP Date response header value:
-    google.protobuf.Timestamp generated_at = 3;
-    bytes data = 4;
+    google.protobuf.Timestamp updated_at = 4;
   }
 
   repeated Sample samples = 3;

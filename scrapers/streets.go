@@ -19,8 +19,9 @@ import (
 const eKatSearchStreets = eKatURL + "/FindAdresa.aspx/PretragaUlica"
 
 type StreetSearchResults struct {
-	Query   string          `json:"query"`
-	Results []*proto.Street `json:"results"`
+	Query     string          `json:"query"`
+	Results   []*proto.Street `json:"results"`
+	UpdatedAt time.Time       `json:"updated_at"`
 }
 
 // ScrapeStreets fetches streets for a single municipality.
@@ -53,7 +54,13 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 	// Buffer size 1 to make sure only a single request is handled at a time.
 	buf := make(chan *StreetSearchResults, 1)
 
+	fmt.Printf("SCRAPE [%d]: ", mID)
 	coll.OnResponse(func(res *colly.Response) {
+		ts, err := time.Parse(time.RFC1123, res.Headers.Get("date"))
+		if err != nil {
+			errs <- fmt.Errorf("failed to parse date header: %w", err)
+			return
+		}
 		if ct := strings.ToLower(res.Headers.Get("content-type")); ct != "application/json; charset=utf-8" {
 			errs <- fmt.Errorf("got unexpected response with content-type %q", ct)
 			return
@@ -67,6 +74,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 		}
 
 		sr := <-buf
+		sr.UpdatedAt = ts
 		for _, s := range data.D {
 			row := struct {
 				First, Second string
@@ -90,6 +98,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			}
 		}
 
+		fmt.Printf("%d; ", len(sr.Results))
 		ss <- sr
 	})
 
@@ -104,9 +113,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			return
 		}
 
-		qs := make(chan string)
-		go genStreetSearchQueries(qs, errs, subdir)
-		for q := range qs {
+		process := func(q string) bool {
 			buf <- &StreetSearchResults{
 				Query:   cleanup(q),
 				Results: []*proto.Street{},
@@ -123,16 +130,51 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			})
 			if err != nil {
 				errs <- fmt.Errorf("failed to encode query data: %w", err)
-				continue
+				return true // unexpected, no need to retry
 			}
 
+			fmt.Printf("%s: ", cleanup(q))
 			if err := coll.PostRaw(eKatSearchStreets, data); err != nil {
-				errs <- fmt.Errorf("failed to fetch page at %q w/ data = %s: %w", eKatSearchStreets, data, err)
+				// errs <- fmt.Errorf("failed to fetch page at %q w/ data = %s: %w", eKatSearchStreets, data, err)
+				fmt.Print("SPLIT; ")
 				<-buf
+
+				// Retry with smaller chunks:
+				return false
+			}
+
+			return true
+		}
+
+		qs := make(chan string)
+		go genStreetSearchQueries(qs, errs, subdir)
+
+		retry := map[string]struct{}{}
+		for q := range qs {
+			if !process(q) {
+				// Retry with smaller chunks
+				retry[q] = struct{}{}
+			}
+		}
+		for len(retry) > 0 {
+			q := ""
+			for q = range retry {
+				break
+			}
+			delete(retry, q)
+
+			for _, c := range text.Azbuka {
+				for _, q := range []string{string(c) + q, q + string(c)} {
+					if !process(q) {
+						// Retry with even smaller chunks (recursively)
+						retry[q] = struct{}{}
+					}
+				}
 			}
 		}
 
 		coll.Wait()
+		fmt.Println()
 		close(buf)
 		done()
 	}()
@@ -143,34 +185,10 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 func genStreetSearchQueries(qs chan<- string, errs chan<- error, subdir string) {
 	defer close(qs)
 
-	// Common street name components.
-	// These are so common that they apparently crash the server.
-	common := []string{
-		"СКА",
-	}
-
 	tmp := []string{}
 	for _, a := range text.Azbuka {
 		for _, b := range text.Azbuka {
-			q := string([]rune{a, b})
-
-			skip := false
-			// Skip common queries:
-			for _, cq := range common {
-				if strings.Contains(cq, q) {
-					skip = true
-					break
-				}
-			}
-			if !skip {
-				tmp = append(tmp, q)
-				continue
-			}
-
-			// Skip the 2-letter query, instead generate 3-letter queries.
-			for _, c := range text.Azbuka {
-				tmp = append(tmp, string([]rune{a, b, c}))
-			}
+			tmp = append(tmp, string([]rune{a, b}))
 		}
 	}
 
