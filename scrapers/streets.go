@@ -99,7 +99,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			}
 		}
 
-		fmt.Printf("%d; ", len(sr.Results))
+		fmt.Println(len(sr.Results))
 		ss <- sr
 	})
 
@@ -166,7 +166,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 
 			for _, c := range text.Azbuka {
 				for _, q := range []string{string(c) + q, q + string(c)} {
-					if fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q))); !exists(errs, fn) {
+					if fn := filepath.Join(subdir, fmt.Sprintf("%s.json", asciil(q))); exists(errs, fn) {
 						continue
 					}
 					if !process(q) {
