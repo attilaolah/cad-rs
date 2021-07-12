@@ -143,10 +143,34 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 func genStreetSearchQueries(qs chan<- string, errs chan<- error, subdir string) {
 	defer close(qs)
 
-	tmp := make([]string, len(text.Azbuka)*len(text.Azbuka))
-	for i, a := range text.Azbuka {
-		for j, b := range text.Azbuka {
-			tmp[len(text.Azbuka)*i+j] = string([]rune{a, b})
+	// Common street name components.
+	// These are so common that they apparently crash the server.
+	common := []string{
+		"СКА",
+	}
+
+	tmp := []string{}
+	for _, a := range text.Azbuka {
+		for _, b := range text.Azbuka {
+			q := string([]rune{a, b})
+
+			skip := false
+			// Skip common queries:
+			for _, cq := range common {
+				if strings.Contains(cq, q) {
+					skip = true
+					break
+				}
+			}
+			if !skip {
+				tmp = append(tmp, q)
+				continue
+			}
+
+			// Skip the 2-letter query, instead generate 3-letter queries.
+			for _, c := range text.Azbuka {
+				tmp = append(tmp, string([]rune{a, b, c}))
+			}
 		}
 	}
 
