@@ -103,40 +103,21 @@ func SaveMunicipalities(ms []*pb.Municipality, dir string) error {
 	return nil
 }
 
-// Saves JSON data as dir/fn.min.json and dir/fn.json.
+// Saves JSON data as dir/fn.json.
 func saveJSON(data interface{}, dir, fn string) error {
-	raw, err := json.MarshalIndent(data, "", "  ")
+	fn += ".json"
+	f, err := os.Create(filepath.Join(dir, fn))
 	if err != nil {
-		return fmt.Errorf("failed to encode data: %w", err)
-	}
-	if err := saveFile(append(raw, '\n'), filepath.Join(dir, fn)+".json"); err != nil {
-		return fmt.Errorf("failed to save data: %w", err)
-	}
-
-	if raw, err = json.Marshal(data); err != nil {
-		return fmt.Errorf("failed to encode data (minified): %w", err)
-	}
-	if err := saveFile(raw, filepath.Join(dir, fn)+".min.json"); err != nil {
-		return fmt.Errorf("failed to save data (minified): %w", err)
-	}
-
-	return nil
-}
-
-// Saves raw data into a file, handling create/write/close.
-func saveFile(data []byte, path string) error {
-	f, err := os.Create(path)
-	if err != nil {
-		return fmt.Errorf("failed to create file %q: %w", path, err)
+		return fmt.Errorf("failed to create file %q: %w", fn, err)
 	}
 	defer func() {
-		if cerr := f.Close(); cerr != nil {
-			err = fmt.Errorf("failed to close file %q: %w", path, cerr)
+		if cerr := f.Close(); cerr != nil && err == nil {
+			err = fmt.Errorf("failed to close file %q: %w", fn, cerr)
 		}
 	}()
 
-	if _, err = f.Write(data); err != nil {
-		return fmt.Errorf("failed to write data to file %q: %w", path, err)
+	if err = json.NewEncoder(f).Encode(data); err != nil {
+		return fmt.Errorf("failed to encode data to file %q: %w", fn, err)
 	}
 
 	return err
