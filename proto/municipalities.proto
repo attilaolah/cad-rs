@@ -14,8 +14,10 @@ message Municipality {
 
   repeated CadastralMunicipality cadastral_municipalities = 3;
 
+  repeated Settlement settlements = 4;
+
   // HTTP Date response header value:
-  google.protobuf.Timestamp updated_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
 }
 
 message CadastralMunicipality {
@@ -38,10 +40,21 @@ message CadastralMunicipality {
   google.protobuf.Timestamp updated_at = 4;
 }
 
+message Settlement {
+  string name = 1;
+
+  repeated Street streets = 2;
+
+  // HTTP Date response header value
+  // (of the oldest retreaved street search query):
+  google.protobuf.Timestamp updated_at = 3;
+}
+
 message Street {
   int64 id = 1;
-  string full_name = 2;
+  string name = 2;
+  string full_name = 3;
 
   // HTTP Date response header value:
-  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
 }
