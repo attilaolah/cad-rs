@@ -136,7 +136,7 @@ func ScrapeStreets(dir string, mID int64) (chan *StreetSearchResults, chan error
 			fmt.Printf("SCRAPE [%d]: %s:\t", mID, cleanup(q))
 			if err := coll.PostRaw(eKatSearchStreets, data); err != nil {
 				// errs <- fmt.Errorf("failed to fetch page at %q w/ data = %s: %w", eKatSearchStreets, data, err)
-				fmt.Print("SPLIT; ")
+				fmt.Println("SPLIT")
 				<-buf
 
 				// Retry with smaller chunks:
